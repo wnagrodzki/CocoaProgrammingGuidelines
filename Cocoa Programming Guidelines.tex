@@ -421,4 +421,216 @@ In one case bisection is allowed.
 \end{codelisting}
 
 
+\section{General rules}
+
+\subsection{Header file is imported only if necessary}
+
+Importing a header files is allowed:
+
+\begin{itemize}
+\item if class needs to conform to a protocol (header with protocol declaration)
+\item if class is inheriting from another class (header with superclass declaration)
+\item if class uses enums in its interface (header with enums declarations)
+\end{itemize}
+
+In any other cases forward declaration should be applied.
+
+
+\subsection{Delegate method always passes the sender}
+
+Delegation method passes sender as first parameter. It is a good practice to use will/did paradigm.
+
+\begin{codelisting}
+- (NSInteger)exampleClassNumberOfActions:(ExampleClass *)exampleClass
+- (void)exampleClass:(ExampleClass *)exampleClass willPerformAction:(Action *)action;
+- (void)exampleClass:(ExampleClass *)exampleClass didPerformAction:(Action *)action;
+\end{codelisting}
+
+
+%\subsection{Lallal}
+%
+%a
+%
+%\begin{codelisting}
+%@property (nonatomic) CGGradientRef tileGradient; // default: a lovely blue
+%@property (nonatomic) NSInteger selectionBorderWidth; // default: 5 pixels
+%@property (nonatomic) CGGradientRef selectionGradient; // default: a subtle white to grey gradient
+%\end{codelisting}
+
+
+\subsection{Init method takes only mandatory parameters}
+
+All settings required to proper initialization are passed as initializer parameters. They are accessible later through readonly properties.
+
+\begin{codelisting}
+@property (strong, nonatomic, readonly) DownloaderMode downloaderMode;
+
+- (id)initWithDownloaderMode:(DownloaderMode)downloaderMode;
+\end{codelisting}
+
+\begin{tiplisting}
+If you need a convenience method to create instances, consider creating factory methods.
+\end{tiplisting}
+
+
+\subsection{Accessors are not used in init and dealloc}
+
+Instance subclasses may be in an inconsistent state during init and dealloc method execution, hence code in those methods must avoid invoking accessors.
+
+\begin{codelisting}
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        _foo = [NSMutableSet set];
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+    [_titleLabel removeObserver:self forKeyPath:@"text"];
+}
+\end{codelisting}
+
+
+\subsection{Abstract class can be faked with assertion}
+
+Creating instances of abstract classes can be thwarted with following assertion.
+
+\begin{codelisting}
+NSAssert1([self isMemberOfClass:[MyAbstractClass class]] == NO, 
+          @"%@ is an abstract class. Please do not create instances of it.", [self class]);
+\end{codelisting}
+
+
+\subsection{Abstract method raises exception}
+
+Forcing subclass to provide implementation of a method is accomplished by raising exception.
+
+\begin{codelisting}
+- (void)abstractMethod
+{
+    [NSException raise:NSInternalInconsistencyException 
+                format:@"It's template method. Implementation must be provided in subclass."];
+}
+\end{codelisting}
+
+
+\subsection{Enumeration type contains invalid value}
+
+Enumeration type equal to zero is considered as invalid. It protects instance variables from being initialized with meaningful value.
+
+\begin{codelisting}
+typedef NS_ENUM(NSInteger, Enumeration) {
+    EnumerationInvalid,
+    EnumerationA,
+    EnumerationB,
+    EnumerationC,
+};
+\end{codelisting}
+
+It also shields from false positives, when comparing against values returned by methods sent to nil pointer.
+
+\begin{codelisting}
+NSError * error;
+BOOL valid = [self isUserValid:user error:&error];
+if (valid == NO) {
+    if(error.code == LoginOrderBlockedErrorCode) {
+        // assuming error is nil and LoginOrderBlockedErrorCode is equal to 0
+    }
+}
+\end{codelisting}
+
+\begin{importantlisting}
+Always check error domain before checking error code.
+\end{importantlisting}
+
+
+\subsection{The highest level of abstraction is used by default}
+
+Lower levels are used only when more control is needed. For example, instead using GCD:
+
+\begin{codelisting}
+dispatch_sync(dispatch_get_main_queue(), ^{
+    // code
+}
+\end{codelisting}
+
+Use operation queue.
+
+\begin{codelisting}
+[[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    // code
+}];
+\end{codelisting}
+
+
+\subsection{Exceptions are not used to control flow}
+
+The general pattern is that exceptions are reserved for programming or unexpected runtime errors such as out-of-bounds collection access, attempts to mutate immutable objects, sending an invalid message, and losing the connection to the window server. The program catching such an exception should quit soon afterwards. Exceptions must not be used to control flow in favor of NSError objects.
+When developing a class or a framework exceptions are thrown to indicate that class or framework is being misused:
+
+\begin{codelisting}
+- (void)abstractMethod
+{
+    [NSException raise:NSInternalInconsistencyException 
+                format:@"It's template method, you need to implement it in your subclass"];
+}
+\end{codelisting}
+
+
+\subsection{Lazy loading reduces memory footprint}
+
+Creating object on demand reduces initialization  time of containing class.
+
+\begin{codelisting}
+- (NSMutableDictionary *)cacheDictionary
+{
+    if (_cacheDictionary == nil) {
+        _cacheDictionary = [NSMutableDictionary dictionary];
+    }
+    return _cacheDictionary;
+}
+\end{codelisting}
+
+
+\subsection{Object registers itself as an observer}
+
+Unregistering follows the same rule.
+
+\begin{codelisting}
+[obj addObserver:self forKeyPath:@"isExecuting" options:NSKeyValueObservingOptionNew context:NULL];
+...
+[obj removeObserver:self forKeyPath:@"isExecuting" context:NULL];
+\end{codelisting}
+
+
+\subsection{Property in category is realized by associated object}
+
+New property is added to existing class by using associated objects. Please pay attention to the way the key is defined.
+
+\begin{codelisting}
+static void * const navigationItemKey = (void *)&navigationItemKey;
+
+- (void)setNavigationItem:(UINavigationItem *)navigationItem
+{
+    objc_setAssociatedObject(self, 
+                             navigationItemKey, 
+                             navigationItem, 
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (UINavigationItem *)navigationItem
+{
+    UINavigationItem * navigationItem = objc_getAssociatedObject(self, navigationItemKey);
+    if (navigationItem == nil) {
+        navigationItem = [[UINavigationItem alloc] init];
+        self.navigationItem = navigationItem;
+    }
+    return navigationItem;
+}
+\end{codelisting}
+
+
 \end{document}
