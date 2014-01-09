@@ -687,4 +687,101 @@ Main method checks if operation is cancelled at the very beginning and interrupt
 \end{codelisting}
 
 
+\section{UIView}
+
+\subsection{View is usually initialized in two ways}
+
+By calling initWithFrame, or initWithCoder method when it is unarchived form nib file. Both situations are covered.
+
+\begin{codelisting}
+@interface ExampleView ()
+
+@property (strong, nonatomic) UITextField * textField;
+
+@end
+
+@implementation ExampleView
+
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self initialize];
+    }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        [self initialize];
+    }
+    return self;
+}
+
+- (void)initialize
+{
+    _textField = [[UITextField alloc] init];
+    _textField.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:_textField];
+    
+    NSDictionary * views = NSDictionaryOfVariableBindings(_textField);
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-8-[_textField]-8-|"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[_textField]-8-|"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:views]];
+}
+\end{codelisting}
+
+Note that we do not implement -encodeWithCoder: method. UIViews and UIViewControllers does not follow normal serialization process, their state is persisted in model.
+
+
+\subsection{Interface of generic view}
+
+View exposes minimal set of properties and methods that are required for its configuration.
+Property is not backed up by instance variable, but by view's or subview's property, if possible.
+
+\begin{codelisting}
+- (NSString *)name
+{
+    return self.nameLabel.text;
+}
+
+- (void)setName:(NSString *)name
+{
+    self.nameLabel.text = name;
+}
+\end{codelisting}
+
+View is independent of model. Mapping between view's and model's properties is kept in a category on that view. This way view controller is kept cleaner.
+
+\begin{codelisting}
+@implementation UITableViewCell (Person)
+
+- (void)configureWithPerson:(Person *)person
+{
+    self.imageView.image = person.photo;
+    self.textLabel.text = person.name;
+}
+\end{codelisting}
+
+
+\subsection{Interface of specific view}
+
+Specific view is tightly coupled with model. It exposes one method that takes a model object and configures the view.
+
+\begin{codelisting}
+@interface PersonTableViewCell : UITableViewCell
+
+- (void)configureWithPerson:(Person *)person
+
+@end
+\end{codelisting}
+
+
 \end{document}
