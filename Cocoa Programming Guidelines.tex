@@ -633,4 +633,58 @@ static void * const navigationItemKey = (void *)&navigationItemKey;
 \end{codelisting}
 
 
+\section{Concurrency}
+
+Recommended reading  \href{http://www.objc.io/issue-2/}{Concurrent Programming - objc.io}
+
+\begin{importantlisting}
+To avoid priority inversion problems with Grand Central Dispatch use default queue priority DISPATCH\_QUEUE\_PRIORITY\_DEFAULT in almost all cases.
+\end{importantlisting}
+
+
+\subsection{Multiple readers one writer}
+
+Concurrent isolation queue is used to synchronize access to a property.
+
+\begin{codelisting}
+NSString * queueLabel = [NSString stringWithFormat:@"%@.isolation.%p", [self class], self];
+self.isolationQueue = dispatch_queue_create([queueLabel UTF8String], DISPATCH_QUEUE_CONCURRENT);
+\end{codelisting}
+
+Dispatch barrier async runs the block after all previously scheduled blocks are completed and before any following blocks are run.
+
+\begin{codelisting}
+- (void)setObject:(id)anObject forKey:(id <NSCopying>)aKey
+{
+    aKey = [aKey copyWithZone:NULL];
+    dispatch_barrier_async(self.isolationQueue, ^{
+        [self.mutableDictionary setObject:anObject forKey:aKey];
+    });
+}
+
+- (id)objectForKey:(id)aKey
+{
+    __block id object;
+    dispatch_sync(self.isolationQueue, ^{
+        object = [self.mutableDictionary objectForKey:aKey];
+    });
+    return object;
+}
+\end{codelisting}
+
+
+\subsection{NSOperation can be cancelled before it begins execution}
+
+Main method checks if operation is cancelled at the very beginning and interrupts execution if condition is true.
+
+\begin{codelisting}
+- (void)main
+{
+    if (self.isCancelled) return;
+    
+    // code
+}
+\end{codelisting}
+
+
 \end{document}
