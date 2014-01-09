@@ -784,4 +784,80 @@ Specific view is tightly coupled with model. It exposes one method that takes a 
 \end{codelisting}
 
 
+\section{UIViewController}
+
+\subsection{Properties affecting user interface}
+
+It is a common practise to have properties on view controller that influence its view. Putting view adjusting code in the setter is not enough, as view may be not loaded. After it is loaded, view controller should adjust it according to the property. In result it is convenient to create a separate method for adjusting the view as it will be called from the setter and -viewDidLoad as well.
+
+\begin{codelisting}
+- (void)setClient:(Client *)client
+{
+    _client = client;
+    [self adjustUserInterfaceForClient:client];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    [self adjustUserInterfaceForClient:self.client];
+}
+
+- (void)adjustUserInterfaceForClient:(Client *)client
+{
+    if (self.isViewLoaded == NO) return;
+    // code adjusting interface
+}
+\end{codelisting}
+
+
+\subsection{View controller containment}
+
+
+\subsubsection{Container specific item is provided by property}
+
+
+If the container requires the child to have specific properties, it delivers category on UIViewController that provides an item which encapsulates all of them.
+
+\begin{codelisting}
+- (UINavigationItem *)navigationItem
+{
+    UINavigationItem * navigationItem = objc_getAssociatedObject(self, kNavigationItemKey);
+    if (navigationItem == nil) {
+        navigationItem = [[UINavigationItem alloc] init];
+        self.navigationItem = navigationItem;
+    }
+    return navigationItem;
+}
+\end{codelisting}
+
+Whenever container needs to stay in sync with child's properties it uses Key Value Observing.
+
+
+\subsubsection{Container is accessible from contained view controllers}
+
+Child view controller can access the container through a property.
+
+\begin{codelisting}
+@interface UIViewController (UINavigationControllerItem)
+
+@property(nonatomic,readonly,retain) UINavigationController *navigationController;
+
+@end
+\end{codelisting}
+
+Example getter implementation traverses view controller hierarchy and returns the closest parent view controller of the container class.
+
+\begin{codelisting}
+- (UINavigationController *)navigationController
+{
+    UIViewController * controller = self.parentViewController;
+    while (controller != nil && [controller class] != [UINavigationController class]) {
+        controller = controller.parentViewController;
+    }
+    return (UINavigationController *)controller;
+}
+\end{codelisting}
+
+
 \end{document}
