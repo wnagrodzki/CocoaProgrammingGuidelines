@@ -1,0 +1,424 @@
+% XeLaTeX can use any Mac OS X font. See the setromanfont command below.
+% Input to XeLaTeX is full Unicode, so Unicode characters can be typed directly into the source.
+
+% The next lines tell TeXShop to typeset with xelatex, and to open and save the source with Unicode encoding.
+
+%!TEX TS-program = xelatex
+%!TEX encoding = UTF-8 Unicode
+
+
+% Apple Documentation Style - Latex Template
+% https://github.com/izydor86/AppleDocumentationStyleLatexTemplate
+% Wojciech Nagrodzki 2013
+
+
+\documentclass[10pt]{extarticle}
+\usepackage[margin=2cm]{geometry}       % See geometry.pdf to learn the layout options. There are lots.
+\geometry{a4paper}                      % ... or a4paper or a5paper or ... 
+\usepackage[parfill]{parskip}           % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{titlesec}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{verbatim}
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage{hyperref}
+\usepackage{tabto}
+
+
+% Define section, subsection and subsubsection font size and color
+\definecolor{AllportsColor}{HTML}{0769AE}
+\definecolor{VeniceBlue}{HTML}{045078}
+
+\titleformat*{\section}
+{\huge}
+
+\titleformat*{\subsection}
+{\color{AllportsColor}\LARGE}
+
+\titleformat*{\subsubsection}
+{\color{VeniceBlue}\large\bfseries}
+
+
+% Define the colors of table of contents
+% This is helpful to understand http://tex.stackexchange.com/questions/110253/what-the-first-argument-for-lsubsection-actually-is
+\definecolor{LochmaraColor}{HTML}{0C88CC}
+
+\makeatletter
+
+\renewcommand{\l@section}[2]{\vspace{14pt}\@dottedtocline{2}{0pt}{0pt}{\bfseries\textcolor{LochmaraColor}{#1}}{#2}} 
+\renewcommand{\l@subsection}[2]{\@dottedtocline{2}{0pt}{0pt}{\textcolor{LochmaraColor}{#1}}{#2}}
+\renewcommand{\l@subsubsection}[2]{\@dottedtocline{2}{20pt}{0pt}{\textcolor{LochmaraColor}{#1}}{#2}}
+
+\renewcommand{\@dotsep}{10000}
+
+\makeatother
+
+
+% Insert 22pt white space before roc title. \titlespacing at line 65 changes it by -22 later on.
+\renewcommand*\contentsname{\hspace{22pt}Contents}
+
+
+% Remove numbers before sections, it does not remove a spacing from the left side of section
+% Look below to see how I remove them
+\renewcommand\thesection{}
+\renewcommand\thesubsection{}
+\renewcommand\thesubsubsection{}
+
+
+% Define a spacing for section, subsection and subsubsection
+% http://tex.stackexchange.com/questions/108684/spacing-before-and-after-section-titles
+\titlespacing*{\section}
+{-22pt}{0pt plus 0pt minus 0pt}{40pt plus 0pt minus 0pt}
+\titlespacing*{\subsection}
+{-18pt}{42pt plus 64pt minus 0pt}{0pt}
+\titlespacing*{\subsubsection}
+{-13pt}{12pt plus 0pt minus 0pt}{0pt}
+
+
+% Section begins on new page
+\newcommand{\sectionbreak}{\clearpage}
+
+
+% Line spacing
+\linespread{1.3}
+
+
+% Lists a code inside of a blue border
+\definecolor{BaliHaiColor}{HTML}{7CA1B3}
+\newenvironment{codelisting}
+{\footnotesize\mdframed[middlelinewidth=0.5pt, middlelinecolor=BaliHaiColor, skipabove=15pt]\verbatim}
+{\endverbatim\endmdframed\vspace{12pt}\normalsize}
+
+
+% Lists text inside yellow border
+\definecolor{GoldenDreamColor}{HTML}{F2D138}
+\newenvironment{tiplisting}
+{\small\mdframed[middlelinewidth=0.5pt, middlelinecolor=GoldenDreamColor, skipabove=15pt]{\textbf{Tip:}}}
+{\endmdframed\vspace{12pt}\normalsize}
+
+
+% Lists text inside a blue border
+\definecolor{MatisseColor}{HTML}{236AB2}
+\newenvironment{importantlisting}
+{\mdframed[middlelinewidth=0.5pt, middlelinecolor=MatisseColor, skipabove=15pt]{\textbf{Important:}}}
+{\endmdframed\vspace{12pt}}
+
+
+% Hyperlinks
+\hypersetup{
+    colorlinks = true,
+    allcolors = {LochmaraColor},
+}
+
+
+% Will Robertson's fontspec.sty can be used to simplify font choices.
+% To experiment, open /Applications/Font Book to examine the fonts provided on Mac OS X,
+% and change "Hoefler Text" to any of these choices.
+
+\usepackage{fontspec,xltxtra,xunicode}
+\defaultfontfeatures{Mapping=tex-text}
+\setromanfont[Mapping=tex-text]{Lucida Grande}
+\setsansfont[Scale=MatchLowercase,Mapping=tex-text]{Gill Sans}
+\setmonofont[Scale=MatchLowercase]{Menlo Regular}
+
+
+\begin{document}
+
+\tableofcontents
+
+\section{Visual Appearance}
+
+
+Hardly any software is maintained for its whole life by the original author. Writing code in unified way helps engineers to understand it more quickly.
+
+
+\subsection{Class names are not prefixed usually}
+
+Prefixes are used only for classes that are to be shared between applications.
+
+
+\subsection{Protocol names indicates behavior}
+Most protocols group related methods that aren’t associated with any class in particular. This type of protocol should be named so that the protocol won’t be confused with a class. A common convention is to use a gerund (“...ing”) form:
+
+\begin{itemize}
+\item NSLocking	\tabto{3cm} Good
+\item NSLock \tabto{3cm} Poor (seems like a name for a class)
+\end{itemize}
+
+Some protocols group a number of unrelated methods (rather than create several separate small protocols). These protocols tend to be associated with a class that is the principal expression of the protocol. In these cases, the convention is to give the protocol the same name as the class. An example of this sort of protocol is the NSObject protocol.
+
+
+\subsection{Header file follows a structure}
+
+Header should be kept as simple as possible. Declarations appears in it in the following order:
+
+\begin{enumerate}
+\item Imports
+\item Forward class declarations
+\item Enumeration types
+\item Constants
+\item Notification names and its user info dictionary keys
+\item Delegate protocol
+\item Data source protocol
+\item Class interface
+\end{enumerate}
+
+The class interface has a fixed structure as well:
+
+\begin{enumerate}
+\item Properties
+\item Data source property
+\item Delegate property
+\item Class methods
+\item Instance methods
+\end{enumerate}
+
+Please pay attention to number of separating lines, it is also a rule.
+
+\begin{codelisting}
+#import <Foundation/Foundation.h>
+
+@class ExampleClass;
+
+
+typedef NS_ENUM(NSInteger, Enumeration) {
+    EnumerationInvalid,
+    EnumerationA,
+};
+
+extern CGFloat const ExampleClassDefaultHeight;
+
+extern NSString * const ExampleClassWillPerformActionNotification;
+extern NSString * const ExampleClassDidPerformActionNotification;
+extern NSString * const ExampleClassActionNameKey;
+
+
+@protocol ExampleClassDelegate <NSObject>
+
+- (void)exampleClass:(ExampleClass *)exampleClass didPerformAction:(Action *)action;
+
+@optional
+
+- (void)exampleClass:(ExampleClass *)exampleClass willPerformAction:(Action *)action;
+
+@end
+
+
+@protocol ExampleClassDataSource <NSObject>
+
+- (NSInteger)exampleClassNumberOfActions:(ExampleClass *)exampleClass;
+
+@end
+
+
+@interface ExampleClass : NSObject
+
+@property (strong, nonatomic) NSURL * initialProperty;
+@property (weak, nonatomic) id<ExampleClassDataSource> dataSource;
+@property (weak, nonatomic) id<ExampleClassDelegate> delegate;
+
++ (id)exampleClassWithInitialProperty:(NSURL *)initialProperty;
+- (id)initWithInitialProperty:(NSURL *)initialProperty;
+- (void)performAction;
+
+@end
+\end{codelisting}
+
+
+\subsection{Implementation file is divided by pragma marks}
+
+Methods in implementation file appear in the same order they are declared in the header. They are grouped by pragma marks similar to following:
+
+\begin{codelisting}
+#pragma mark - Public Properties
+#pragma mark - Public Class Methods
+#pragma mark - Public Instance Methods
+#pragma mark - IBActions
+#pragma mark - Overridden
+#pragma mark - Private Properties
+#pragma mark - Private Class Methods
+#pragma mark - Private Instance Methods
+#pragma mark - Protocols
+#pragma mark - Notifications
+\end{codelisting}
+
+When greater granularity is needed:
+
+\begin{codelisting}
+#pragma mark - Overridden (UIView)
+#pragma mark - Overridden (UIContainerViewControllerCallbacks)
+#pragma mark - Overridden (UIViewControllerRotation)
+\end{codelisting}
+
+\begin{tiplisting}
+Create a code snipped to help you use the same pragma marks through all implementation files.
+\end{tiplisting}
+
+\subsection{Property attributes are kept in order}
+Attributes are kept in the same order through all property declarations.
+
+\begin{codelisting}
+[assign | weak | strong | copy] + [nonatomic | atomic] + [readonly | readwrite] + [getter = ]
+\end{codelisting}
+
+None of the attributes can be omitted with the exception of readwrite.
+
+\begin{codelisting}
+@property (assign, nonatomic) CGFloat height;
+@property (strong, nonatomic) UIColor * color;
+@property (copy, nonatomic) NSString * name;
+@property (weak, nonatomic) id <UITableViewDelegate> delegate;
+\end{codelisting}
+
+Getters for boolean properties should be renamed as follows.
+
+\begin{codelisting}
+@property (assign, nonatomic, getter = isVisible) BOOL visible;
+\end{codelisting}
+
+
+\subsection{Protocols and constants are prefixed with class name}
+
+Protocols, notification names, enumeration types and other constants that refer to particular class are prefixed with the name of that class.
+
+\begin{codelisting}
+typedef NS_ENUM(NSInteger, UITableViewStyle) {
+    UITableViewStylePlain,
+    UITableViewStyleGrouped
+};
+
+UIKIT_EXTERN NSString *const UITableViewIndexSearch;
+
+UIKIT_EXTERN const CGFloat UITableViewAutomaticDimension;
+
+@protocol UITableViewDelegate<NSObject, UIScrollViewDelegate>
+...
+\end{codelisting}
+
+\subsection{IBOutlets are declared privately}
+
+Outlets are defined as weak properties at the top of class extension, divided by one line from other properties.
+
+\begin{codelisting}
+@interface PanelViewController ()
+
+@property (weak, nonatomic) IBOutlet UIButton * infoButton;
+@property (weak, nonatomic) IBOutlet UIButton * closeButton;
+@property (weak, nonatomic) IBOutlet UILabel * descriptionLabel;
+
+@property (weak, nonatomic) UIView * overlayView;
+
+@end
+\end{codelisting}
+
+
+\subsection{Classes may have additional header file for subclasses}
+
+Private methods and properties are never exposed. To provide subclass access to them, they have to be declared in ForSubclassEyesOnly category. It should be placed in separate header file, named in the following manner: [Class Name] + Subclass.h. 
+
+\begin{tiplisting}
+UIGestureRecognizerSubclass.h is a good example of that approach.
+\end{tiplisting}
+
+
+\subsection{Methods return early, return often}
+
+Nesting makes code harder to read.
+
+\begin{codelisting}
+- (BOOL)loginUser:(NSString *)user withPassword:(NSString *)password
+{
+    if (user.length >= 6) {
+        if ((password.length >= 8) {
+            // actual logging code
+        }
+    }
+    return NO;
+}
+\end{codelisting}
+
+Getting invalid cases out of he way first will keep the working code with one level of indentation, and ensure that all parameters are valid. This paradigm is called The Golden Path.
+
+\begin{codelisting}
+- (BOOL)loginUser:(NSString *)user withPassword:(NSString *)password
+{
+    if (user.length < 6) return NO;
+    if (password.length < 8) return NO;
+    
+    // actual logging code
+}
+\end{codelisting}
+
+This approach has one more advantage, it is easier to add error handling later on.
+
+\begin{codelisting}
+- (BOOL)loginUser:(NSString *)user withPassword:(NSString *)password error:(NSError **)error
+{
+    if (user.length < 6) {
+        if (error != NULL)
+            *error = [NSError errorWithDomain:ExampleDomain
+                                         code:1001
+                                     userInfo:@{NSLocalizedDescriptionKey: @"User name must have..."}];
+        return NO;
+    }
+    
+    if (password.length < 8) {
+        if (error != NULL)
+            *error = [NSError errorWithDomain:ExampleDomain
+                                         code:1002
+                                     userInfo:@{NSLocalizedDescriptionKey: @"Password must have..."}];
+        return NO;
+    }
+    
+    // logging in code
+}
+\end{codelisting}
+
+\subsection{Method are not bisected with conditionals.}
+
+Following method structure is not acceptable.
+
+\begin{codelisting}
+- (void)method
+{
+    if (self.valueX == 10) {
+        // perform some actions
+    }
+    else {
+        // perform some other actions
+    }
+}
+\end{codelisting}
+
+Bisection can be removed by returning in the if statement.
+
+\begin{codelisting}
+- (void)method
+{
+    if (self.valueX == 10) {
+        // perform some actions
+        return;
+    }
+    
+    // perform some other actions
+}
+\end{codelisting}
+
+In one case bisection is allowed.
+
+\begin{codelisting}
+- (void)method
+{
+    if (self.valueX == 10) {
+        // perform some actions
+    }
+    else {
+        // perform some other actions
+    }
+    
+    // perform some actions no matter what
+}
+\end{codelisting}
+
+
+\end{document}
