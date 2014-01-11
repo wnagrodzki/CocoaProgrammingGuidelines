@@ -606,6 +606,64 @@ Unregistering follows the same rule.
 \end{codelisting}
 
 
+\subsection{Method does not return NSError object}
+
+Success or failure is indicated by the return value of the method: nil or NO.
+
+\begin{codelisting}
+- (id)initWithContentsOfURL:(NSURL *)aURL;
+- (BOOL)writeToURL:(NSURL *)aURL atomically:(BOOL)atomically;
+\end{codelisting}
+
+NSError object is used only for providing additional information about the failure.
+
+\begin{codelisting}
+- (id)initWithContentsOfURL:(NSURL *)aURL options:(NSDataReadingOptions)mask error:(NSError **)errorPtr;
+- (BOOL)writeToURL:(NSURL *)aURL options:(NSDataWritingOptions)mask error:(NSError **)errorPtr
+\end{codelisting}
+
+Therefore you should always check that the return value is nil or NO before attempting to do anything with the NSError object.
+
+
+\subsection{Custom error belong to error domain}
+
+Custom errors have error domain and error code defined.
+
+\begin{codelisting}
+extern NSString *const MyErrorDomain;
+
+typedef NS_ENUM(NSInteger, MyErrorCode) {
+    MyInvalidErrorCode
+    MyErrorCode1,
+    MyErrorCode2,
+    MyUnknownErrorCode,
+};
+\end{codelisting}
+
+Both parameters and localized description are used upon error initialization.
+
+\begin{codelisting}
+if (error != NULL) {
+    if(error_situation_1) {
+        error* = [NSError errorWithDomain:MyErrorDomain 
+                                     code:MyErrorCode1
+                                 userInfo:@{NSLocalizedDescriptionKey: @"Description of error 1"}];
+    }
+    else if (error_situation_2) {
+        error* = [NSError errorWithDomain:MyErrorDomain 
+                                     code:MyErrorCode2
+                                 userInfo:@{NSLocalizedDescriptionKey: @"Description of error 2"}];
+    }
+    else {
+        error* = [NSError errorWithDomain:MyErrorDomain 
+                                     code:MyUnknownErrorCode
+                                 userInfo:@{NSLocalizedDescriptionKey: @"Unknown error"}];
+    }
+}
+
+\end{codelisting}
+
+
 \subsection{Property in category is realized by associated object}
 
 New property is added to existing class by using associated objects. Please pay attention to the way the key is defined.
