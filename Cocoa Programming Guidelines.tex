@@ -126,7 +126,7 @@
 
 \tableofcontents
 
-\section{Visual Appearance}
+\section{Code Appearance}
 
 
 Hardly any software is maintained for its whole life by the original author. Writing code in unified way helps engineers to understand it more quickly.
@@ -499,8 +499,15 @@ Instance subclasses may be in an inconsistent state during init and dealloc meth
 Creating instances of abstract classes can be thwarted with following assertion.
 
 \begin{codelisting}
-NSAssert1([self isMemberOfClass:[MyAbstractClass class]] == NO, 
-          @"%@ is an abstract class. Please do not create instances of it.", [self class]);
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        NSAssert1([self isMemberOfClass:[MyAbstractClass class]] == NO,
+                  @"%@ is an abstract class. Please do not create instances of it.", [self class]);
+    }
+    return self;
+}
 \end{codelisting}
 
 
