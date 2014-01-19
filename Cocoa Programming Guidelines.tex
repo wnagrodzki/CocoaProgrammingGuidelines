@@ -539,21 +539,28 @@ typedef NS_ENUM(NSInteger, Enumeration) {
 };
 \end{codelisting}
 
-It also shields from false positives, when comparing against values returned by methods sent to nil pointer.
+It also shields from false positives, when comparing against values returned by methods sent to nil pointer. Let's assume EnumerationInvalid does not exist.
 
 \begin{codelisting}
-NSError * error;
-BOOL valid = [self isUserValid:user error:&error];
-if (valid == NO) {
-    if(error.code == LoginOrderBlockedErrorCode) {
-        // assuming error is nil and LoginOrderBlockedErrorCode is equal to 0
-    }
-}
+@interface MyObject : NSObject
+
+@property (assign, nonatomic) Enumeration enumeration;
+
+@end
 \end{codelisting}
 
-\begin{importantlisting}
-Always check error domain before checking error code.
-\end{importantlisting}
+If myObject pointer is nil, performActionA method is called, and it may not be expected.
+
+\begin{codelisting}
+MyObject * myObject = ...
+
+if (myObject.enumeration == EnumerationA)
+    [self performActionA];
+else if (myObject.enumeration == EnumerationB)
+    [self performActionB];
+else
+    [self performActionC];
+\end{codelisting}
 
 
 \subsection{The highest level of abstraction is used by default}
@@ -604,13 +611,17 @@ Creating object on demand reduces initialization  time of containing class.
 \end{codelisting}
 
 
-\subsection{Object registers itself as an observer}
+\subsection{Object does not register others objects as observers}
+
+Object registers itself as an observer.
+
+\begin{codelisting}
+[obj addObserver:self forKeyPath:@"isExecuting" options:NSKeyValueObservingOptionNew context:NULL];
+\end{codelisting}
 
 Unregistering follows the same rule.
 
 \begin{codelisting}
-[obj addObserver:self forKeyPath:@"isExecuting" options:NSKeyValueObservingOptionNew context:NULL];
-...
 [obj removeObserver:self forKeyPath:@"isExecuting" context:NULL];
 \end{codelisting}
 
@@ -631,7 +642,7 @@ NSError object is used only for providing additional information about the failu
 - (BOOL)writeToURL:(NSURL *)aURL options:(NSDataWritingOptions)mask error:(NSError **)errorPtr
 \end{codelisting}
 
-Therefore you should always check that the return value is nil or NO before attempting to do anything with the NSError object.
+Therefore you should always check that the return value is nil or NO before attempting to do anything with the NSError object. Similarly you ought to check error domain before checking error code.
 
 
 \subsection{Custom error belong to error domain}
