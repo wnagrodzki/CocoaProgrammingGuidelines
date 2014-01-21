@@ -323,7 +323,7 @@ UIGestureRecognizerSubclass.h is a good example of that approach.
 \end{tiplisting}
 
 
-\subsection{Methods return early, return often}
+\subsection{Method returns early, returns often}
 
 Nesting makes code harder to read.
 
@@ -376,7 +376,7 @@ This approach has one more advantage, it is easier to add error handling later o
 }
 \end{codelisting}
 
-\subsection{Method are not bisected with conditionals.}
+\subsection{Method is not bisected with conditionals.}
 
 Following method structure is not acceptable.
 
@@ -582,7 +582,7 @@ Use operation queue.
 \end{codelisting}
 
 
-\subsection{Exceptions are not used to control flow}
+\subsection{Exception is not used to control flow}
 
 The general pattern is that exceptions are reserved for programming or unexpected runtime errors such as out-of-bounds collection access, attempts to mutate immutable objects, sending an invalid message, and losing the connection to the window server. The program catching such an exception should quit soon afterwards. Exceptions must not be used to control flow in favor of NSError objects.
 When developing a class or a framework exceptions are thrown to indicate that class or framework is being misused:
@@ -611,7 +611,7 @@ Creating object on demand reduces initialization  time of containing class.
 \end{codelisting}
 
 
-\subsection{Object does not register others objects as observers}
+\subsection{Object does not register other objects as observers}
 
 Object registers itself as an observer.
 
@@ -645,7 +645,7 @@ NSError object is used only for providing additional information about the failu
 Therefore you should always check that the return value is nil or NO before attempting to do anything with the NSError object. Similarly you ought to check error domain before checking error code.
 
 
-\subsection{Custom error belong to error domain}
+\subsection{Custom error belongs to error domain}
 
 Custom errors have error domain and error code defined.
 
