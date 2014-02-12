@@ -270,10 +270,12 @@ None of the attributes can be omitted with the exception of readwrite.
 @property (weak, nonatomic) id <UITableViewDelegate> delegate;
 \end{codelisting}
 
-Getters for boolean properties should be renamed as follows.
+Getters for boolean properties should be renamed as follows if they are adjectives.
 
 \begin{codelisting}
 @property (assign, nonatomic, getter = isVisible) BOOL visible;
+@property (assign, nonatomic, getter = isEnabled) BOOL enabled;
+@property (assign, nonatomic, getter = isTracking) BOOL tracking
 \end{codelisting}
 
 
