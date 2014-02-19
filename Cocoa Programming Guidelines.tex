@@ -129,12 +129,12 @@
 \section{Code Appearance}
 
 
-Hardly any software is maintained for its whole life by the original author. Writing code in unified way helps engineers to understand it more quickly.
+Hardly any software is maintained by its original author for its whole life. Writing code in an unified way helps engineers to understand it more quickly.
 
 
 \subsection{Class names are not prefixed usually}
 
-Prefixes are used only for classes that are to be shared between applications.
+Prefixes are used only for classes which are to be shared between applications.
 
 
 \subsection{Protocol names indicates behavior}
@@ -148,9 +148,9 @@ Most protocols group related methods that aren’t associated with any class in 
 Some protocols group a number of unrelated methods (rather than create several separate small protocols). These protocols tend to be associated with a class that is the principal expression of the protocol. In these cases, the convention is to give the protocol the same name as the class. An example of this sort of protocol is the NSObject protocol.
 
 
-\subsection{Header file follows a structure}
+\subsection{Header files follow a structure}
 
-Header should be kept as simple as possible. Declarations appears in it in the following order:
+Each header file should be succinct, and comply with the following declaration's order:
 
 \begin{enumerate}
 \item Imports
@@ -163,7 +163,7 @@ Header should be kept as simple as possible. Declarations appears in it in the f
 \item Class interface
 \end{enumerate}
 
-The class interface has a fixed structure as well:
+A class interface has a fixed structure as well:
 
 \begin{enumerate}
 \item Properties
@@ -173,7 +173,7 @@ The class interface has a fixed structure as well:
 \item Instance methods
 \end{enumerate}
 
-Please pay attention to number of separating lines, it is also a rule.
+Please pay attention to the linespacing, it is also a rule.
 
 \begin{codelisting}
 #import <Foundation/Foundation.h>
@@ -225,9 +225,9 @@ extern NSString * const ExampleClassActionNameKey;
 \end{codelisting}
 
 
-\subsection{Implementation file is divided by pragma marks}
+\subsection{Implementation files are divided by pragma marks}
 
-Methods in implementation file appear in the same order they are declared in the header. They are grouped by pragma marks similar to following:
+Methods in an implementation file appear in the same order as they are declared in the header. They are also grouped by pragma marks similar to the following:
 
 \begin{codelisting}
 #pragma mark - Public Properties
@@ -242,7 +242,7 @@ Methods in implementation file appear in the same order they are declared in the
 #pragma mark - Notifications
 \end{codelisting}
 
-When greater granularity is needed:
+In need of greater granularity:
 
 \begin{codelisting}
 #pragma mark - Overridden (UIView)
@@ -254,8 +254,8 @@ When greater granularity is needed:
 Create a code snipped to help you use the same pragma marks through all implementation files.
 \end{tiplisting}
 
-\subsection{Property attributes are kept in order}
-Attributes are kept in the same order through all property declarations.
+\subsection{Property attributes are kept in an order}
+The attributes are kept in the same order through all property declarations.
 
 \begin{codelisting}
 [assign | weak | strong | copy] + [nonatomic | atomic] + [readonly | readwrite] + [getter = ]
@@ -270,7 +270,7 @@ None of the attributes can be omitted with the exception of readwrite.
 @property (weak, nonatomic) id <UITableViewDelegate> delegate;
 \end{codelisting}
 
-Getters for boolean properties should be renamed as follows if they are adjectives.
+Getters for boolean properties, if they are adjectives, are renamed in the following manner:
 
 \begin{codelisting}
 @property (assign, nonatomic, getter = isVisible) BOOL visible;
@@ -279,9 +279,9 @@ Getters for boolean properties should be renamed as follows if they are adjectiv
 \end{codelisting}
 
 
-\subsection{Protocols and constants are prefixed with class name}
+\subsection{Protocols and constants are prefixed with a class name}
 
-Protocols, notification names, enumeration types and other constants that refer to particular class are prefixed with the name of that class.
+Protocols, notification names, enumeration types and other constants that refer to a particular class are prefixed with the name of that class.
 
 \begin{codelisting}
 typedef NS_ENUM(NSInteger, UITableViewStyle) {
@@ -301,7 +301,7 @@ UIKIT_EXTERN NSString *const UITableViewSelectionDidChangeNotification;
 
 \subsection{IBOutlets are declared privately}
 
-Outlets are defined as weak properties at the top of class extension, divided by one line from other properties.
+Outlets are defined as weak properties at the top of a class extension, and divided by one line from the other properties.
 
 \begin{codelisting}
 @interface PanelViewController ()
@@ -318,30 +318,30 @@ Outlets are defined as weak properties at the top of class extension, divided by
 
 \subsection{Classes may have additional header file for subclasses}
 
-Private methods and properties are never exposed. To provide subclass access to them, they have to be declared in ForSubclassEyesOnly category. It should be placed in separate header file, named in the following manner: [Class Name] + Subclass.h. 
+Private methods and properties are never exposed. To provide a subclass access to them, they have to be declared in a category entitled ForSubclassEyesOnly. It should be placed in a separate header file, named in the following manner: [Class Name] + Subclass.h. 
 
 \begin{tiplisting}
 UIGestureRecognizerSubclass.h is a good example of that approach.
 \end{tiplisting}
 
 
-\subsection{Method returns early, returns often}
+\subsection{Methods return early and often}
 
-Nesting makes code harder to read.
+A nesting usually makes code harder to read.
 
 \begin{codelisting}
 - (BOOL)loginUser:(NSString *)user withPassword:(NSString *)password
 {
     if (user.length >= 6) {
         if ((password.length >= 8) {
-            // actual logging code
+            // the actual logging code
         }
     }
     return NO;
 }
 \end{codelisting}
 
-Getting invalid cases out of he way first will keep the working code with one level of indentation, and ensure that all parameters are valid. This paradigm is called The Golden Path.
+Getting invalid cases out of the way first will keep the working code with one level of indentation, and ensure that all parameters are valid. This paradigm is called The Golden Path.
 
 \begin{codelisting}
 - (BOOL)loginUser:(NSString *)user withPassword:(NSString *)password
@@ -353,7 +353,7 @@ Getting invalid cases out of he way first will keep the working code with one le
 }
 \end{codelisting}
 
-This approach has one more advantage, it is easier to add error handling later on.
+This approach has one more advantage, it is easier to add an error handling later on.
 
 \begin{codelisting}
 - (BOOL)loginUser:(NSString *)user withPassword:(NSString *)password error:(NSError **)error
@@ -378,9 +378,9 @@ This approach has one more advantage, it is easier to add error handling later o
 }
 \end{codelisting}
 
-\subsection{Method is not bisected with conditionals.}
+\subsection{Methods are not bisected with conditionals}
 
-Following method structure is not acceptable.
+The following method structure is not acceptable.
 
 \begin{codelisting}
 - (void)method
@@ -394,7 +394,7 @@ Following method structure is not acceptable.
 }
 \end{codelisting}
 
-Bisection can be removed by returning in the if statement.
+Bisection can be removed by returning within an if statement.
 
 \begin{codelisting}
 - (void)method
@@ -427,9 +427,9 @@ In one case bisection is allowed.
 
 \section{General rules}
 
-\subsection{Header file is imported only if necessary}
+\subsection{Header files are imported only if necessary}
 
-Importing a header files is allowed:
+Importing a header file is allowed:
 
 \begin{itemize}
 \item if class needs to conform to a protocol (header with protocol declaration)
@@ -437,12 +437,12 @@ Importing a header files is allowed:
 \item if class uses enums in its interface (header with enums declarations)
 \end{itemize}
 
-In any other cases forward declaration should be applied.
+In any other case a forward declaration should be applied.
 
 
-\subsection{Delegate method always passes the sender}
+\subsection{Delegate methods always pass the sender}
 
-Delegation method passes sender as first parameter. It is a good practice to use will/did paradigm.
+A delegation method passes the sender as the first parameter. It is a good practice to use will/did paradigm.
 
 \begin{codelisting}
 - (NSInteger)exampleClassNumberOfActions:(ExampleClass *)exampleClass
@@ -462,9 +462,9 @@ Delegation method passes sender as first parameter. It is a good practice to use
 %\end{codelisting}
 
 
-\subsection{Init method takes only mandatory parameters}
+\subsection{Init methods take only mandatory parameters}
 
-All settings required to proper initialization are passed as initializer parameters. They are accessible later through readonly properties.
+All settings required to a proper initialization are passed as initializer's parameters. They are later accessible through readonly properties.
 
 \begin{codelisting}
 @property (strong, nonatomic, readonly) DownloaderMode downloaderMode;
@@ -498,9 +498,9 @@ Instance subclasses may be in an inconsistent state during init and dealloc meth
 \end{codelisting}
 
 
-\subsection{Abstract class can be faked with assertion}
+\subsection{Abstract classes can be faked with assertion}
 
-Creating instances of abstract classes can be thwarted with following assertion.
+Creating instances of an abstract class is foiled by the following assertion.
 
 \begin{codelisting}
 - (id)init
@@ -515,9 +515,9 @@ Creating instances of abstract classes can be thwarted with following assertion.
 \end{codelisting}
 
 
-\subsection{Abstract method raises exception}
+\subsection{Abstract methods raise exceptions}
 
-Forcing subclass to provide implementation of a method is accomplished by raising exception.
+Forcing a subclass to provide an implementation of a method is accomplished by raising an exception in superclass method.
 
 \begin{codelisting}
 - (void)abstractMethod
@@ -528,9 +528,9 @@ Forcing subclass to provide implementation of a method is accomplished by raisin
 \end{codelisting}
 
 
-\subsection{Enumeration type contains invalid value}
+\subsection{Enumeration types contain invalid value}
 
-Enumeration type equal to zero is considered as invalid. It protects instance variables from being initialized with meaningful value.
+The enumeration type equal to zero is considered as invalid. It protects instance variables from being initialized with a meaningful value when not intended.
 
 \begin{codelisting}
 typedef NS_ENUM(NSInteger, Enumeration) {
@@ -567,7 +567,7 @@ else
 
 \subsection{The highest level of abstraction is used by default}
 
-Lower levels are used only when more control is needed. For example, instead using GCD:
+Lower levels are used only when more control is required. For example, instead using GCD:
 
 \begin{codelisting}
 dispatch_sync(dispatch_get_main_queue(), ^{
@@ -575,7 +575,7 @@ dispatch_sync(dispatch_get_main_queue(), ^{
 }
 \end{codelisting}
 
-Use operation queue.
+Use an operation queue.
 
 \begin{codelisting}
 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -584,10 +584,10 @@ Use operation queue.
 \end{codelisting}
 
 
-\subsection{Exception is not used to control flow}
+\subsection{Exceptions are not used to control flow}
 
-The general pattern is that exceptions are reserved for programming or unexpected runtime errors such as out-of-bounds collection access, attempts to mutate immutable objects, sending an invalid message, and losing the connection to the window server. The program catching such an exception should quit soon afterwards. Exceptions must not be used to control flow in favor of NSError objects.
-When developing a class or a framework exceptions are thrown to indicate that class or framework is being misused:
+The general pattern is that exceptions are reserved for programming or unexpected runtime errors, such as out-of-bounds collection access, attempts to mutate immutable objects, sending an invalid message, or losing the connection to the window server. A program catching such exception should quit soon afterwards. Exceptions must not be used to control flow in favor of NSError objects.
+When developing a class or a framework exceptions are thrown to indicate that class or framework are being misused:
 
 \begin{codelisting}
 - (void)abstractMethod
@@ -600,7 +600,7 @@ When developing a class or a framework exceptions are thrown to indicate that cl
 
 \subsection{Lazy loading reduces memory footprint}
 
-Creating object on demand reduces initialization  time of containing class.
+Creating an object on demand reduces initialization  time of containing class.
 
 \begin{codelisting}
 - (NSMutableDictionary *)cacheDictionary
@@ -613,9 +613,9 @@ Creating object on demand reduces initialization  time of containing class.
 \end{codelisting}
 
 
-\subsection{Object does not register other objects as observers}
+\subsection{No object register other objects as observers}
 
-Object registers itself as an observer.
+Object registers only itself as an observer.
 
 \begin{codelisting}
 [obj addObserver:self forKeyPath:@"isExecuting" options:NSKeyValueObservingOptionNew context:NULL];
@@ -628,28 +628,28 @@ Unregistering follows the same rule.
 \end{codelisting}
 
 
-\subsection{Method does not return NSError object}
+\subsection{Methods do not return NSError object}
 
-Success or failure is indicated by the return value of the method: nil or NO.
+A failure is indicated by nil or NO returned by a method. Success similarly by YES or not-nil pointer.
 
 \begin{codelisting}
 - (id)initWithContentsOfURL:(NSURL *)aURL;
 - (BOOL)writeToURL:(NSURL *)aURL atomically:(BOOL)atomically;
 \end{codelisting}
 
-NSError object is used only for providing additional information about the failure.
+NSError object is used only for providing additional information about a failure.
 
 \begin{codelisting}
 - (id)initWithContentsOfURL:(NSURL *)aURL options:(NSDataReadingOptions)mask error:(NSError **)errorPtr;
 - (BOOL)writeToURL:(NSURL *)aURL options:(NSDataWritingOptions)mask error:(NSError **)errorPtr
 \end{codelisting}
 
-Therefore you should always check that the return value is nil or NO before attempting to do anything with the NSError object. Similarly you ought to check error domain before checking error code.
+Therefore you should always check if the return value is nil or NO before attempting to do anything with an NSError object. Moreover, you ought to check the error domain before examining the error code.
 
 
-\subsection{Custom error belongs to error domain}
+\subsection{Custom errors belong to error domains}
 
-Custom errors have error domain and error code defined.
+A custom error have both the error domain and error code defined.
 
 \begin{codelisting}
 extern NSString *const MyErrorDomain;
@@ -662,7 +662,7 @@ typedef NS_ENUM(NSInteger, MyErrorCode) {
 };
 \end{codelisting}
 
-Both parameters and localized description are used upon error initialization.
+Both parameters including localized description are used during error initialization.
 
 \begin{codelisting}
 if (error != NULL) {
@@ -682,13 +682,12 @@ if (error != NULL) {
                                  userInfo:@{NSLocalizedDescriptionKey: @"Unknown error"}];
     }
 }
-
 \end{codelisting}
 
 
-\subsection{Property in category is realized by associated object}
+\subsection{Properties can be added to existing classes}
 
-New property is added to existing class by using associated objects. Please pay attention to the way the key is defined.
+A property is added to an existing class by using associated objects. Please pay attention to the way the key is defined.
 
 \begin{codelisting}
 static void * const navigationItemKey = (void *)&navigationItemKey;
@@ -724,7 +723,7 @@ To avoid priority inversion problems with Grand Central Dispatch use default que
 
 \subsection{Multiple readers one writer}
 
-Concurrent isolation queue is used to synchronize access to a property.
+A concurrent isolation queue is used to synchronize access to a property.
 
 \begin{codelisting}
 NSString * queueLabel = [NSString stringWithFormat:@"%@.isolation.%p", [self class], self];
@@ -755,7 +754,7 @@ Dispatch barrier async runs the block after all previously scheduled blocks are 
 
 \subsection{NSOperation can be cancelled before it begins execution}
 
-Main method checks if operation is cancelled at the very beginning and interrupts execution if condition is true.
+The main method checks if an operation is cancelled at the very beginning, and interrupts execution if condition is true.
 
 \begin{codelisting}
 - (void)main
@@ -771,7 +770,7 @@ Main method checks if operation is cancelled at the very beginning and interrupt
 
 \subsection{View is usually initialized in two ways}
 
-By calling initWithFrame, or initWithCoder method when it is unarchived form nib file. Both situations are covered.
+Either by calling initWithFrame, or initWithCoder method when it is unarchived form a nib file. Both situations are covered.
 
 \begin{codelisting}
 @interface ExampleView ()
@@ -818,13 +817,13 @@ By calling initWithFrame, or initWithCoder method when it is unarchived form nib
 }
 \end{codelisting}
 
-Note that we do not implement -encodeWithCoder: method. UIViews and UIViewControllers does not follow normal serialization process, their state is persisted in model.
+Note that we do not implement -encodeWithCoder: method. UIViews and UIViewControllers does not follow normal serialization process, their state is persisted in a model.
 
 
-\subsection{Interface of generic view}
+\subsection{The interface of generic view}
 
-View exposes minimal set of properties and methods that are required for its configuration.
-Property is not backed up by instance variable, but by view's or subview's property, if possible.
+The view exposes a minimal set of properties and methods that are required for its configuration.
+If possible, a property is not backed up by an instance variable, but rather by view's or subview's property.
 
 \begin{codelisting}
 - (NSString *)name
@@ -838,7 +837,7 @@ Property is not backed up by instance variable, but by view's or subview's prope
 }
 \end{codelisting}
 
-View is independent of model. Mapping between view's and model's properties is kept in a category on that view. This way view controller is kept cleaner.
+The view is independent of a model. A mapping between view's and model's properties is kept in a category on that view. This way a view controller is kept cleaner.
 
 \begin{codelisting}
 @implementation UITableViewCell (Person)
@@ -851,9 +850,9 @@ View is independent of model. Mapping between view's and model's properties is k
 \end{codelisting}
 
 
-\subsection{Interface of specific view}
+\subsection{The interface of specific view}
 
-Specific view is tightly coupled with model. It exposes one method that takes a model object and configures the view.
+The specific view is tightly coupled with model. It exposes one method that takes a model object and configures the view.
 
 \begin{codelisting}
 @interface PersonTableViewCell : UITableViewCell
@@ -868,7 +867,7 @@ Specific view is tightly coupled with model. It exposes one method that takes a 
 
 \subsection{Properties affecting user interface}
 
-It is a common practise to have properties on view controller that influence its view. Putting view adjusting code in the setter is not enough, as view may be not loaded. After it is loaded, view controller should adjust it according to the property. In result it is convenient to create a separate method for adjusting the view as it will be called from the setter and -viewDidLoad as well.
+It is a common practice to have properties on view controller that influence its view. Putting view adjusting code in the setter is not enough, as view may be not loaded. After it is loaded, view controller should adjust it according to the property. In result it is convenient to create a separate method for adjusting the view as it will be called from the setter and -viewDidLoad as well.
 
 \begin{codelisting}
 - (void)setClient:(Client *)client
@@ -894,10 +893,10 @@ It is a common practise to have properties on view controller that influence its
 \subsection{View controller containment}
 
 
-\subsubsection{Container specific item is provided by property}
+\subsubsection{Container specific items are provided by a property}
 
 
-If the container requires the child to have specific properties, it delivers category on UIViewController that provides an item which encapsulates all of them.
+If a container requires its child to have specific properties, it delivers a category on UIViewController. The category provides an item which encapsulates all of the needed properties.
 
 \begin{codelisting}
 - (UINavigationItem *)navigationItem
@@ -911,12 +910,12 @@ If the container requires the child to have specific properties, it delivers cat
 }
 \end{codelisting}
 
-Whenever container needs to stay in sync with child's properties it uses Key Value Observing.
+Whenever container needs to stay in sync with child's properties, it uses Key Value Observing.
 
 
 \subsubsection{Container is accessible from contained view controllers}
 
-Child view controller can access the container through a property.
+Child view controllers can access the container through a property.
 
 \begin{codelisting}
 @interface UIViewController (UINavigationControllerItem)
@@ -926,7 +925,7 @@ Child view controller can access the container through a property.
 @end
 \end{codelisting}
 
-Example getter implementation traverses view controller hierarchy and returns the closest parent view controller of the container class.
+The following getter implementation traverses view controller hierarchy, and returns the closest parent view controller of the container class.
 
 \begin{codelisting}
 - (UINavigationController *)navigationController
