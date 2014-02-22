@@ -451,16 +451,26 @@ A delegation method passes the sender as the first parameter. It is a good pract
 \end{codelisting}
 
 
-%\subsection{Lallal}
-%
-%a
-%
-%\begin{codelisting}
-%@property (nonatomic) CGGradientRef tileGradient; // default: a lovely blue
-%@property (nonatomic) NSInteger selectionBorderWidth; // default: 5 pixels
-%@property (nonatomic) CGGradientRef selectionGradient; // default: a subtle white to grey gradient
-%\end{codelisting}
+\subsection{Property's default values are documented conditionally}
 
+The alloc method clears out the memory allocated for an object’s properties, by setting it to zero. If a property value is not altered during the initialization, a note about its default value may be omitted.
+
+\begin{codelisting}
+/*
+ * A Boolean value that determines whether the view is hidden.
+ */
+@property(nonatomic, getter=isHidden) BOOL hidden                // represented by zeroed memory
+\end{codelisting}
+
+On the contrary, if the default value is changed, a mention about it is included.
+
+\begin{codelisting}
+/*
+ * Defines the anchor point of the layer's bounds rectangle.
+ * The default value of this property is (0.5, 0.5).
+ */
+@property (nonatomic) CGPoint anchorPoint                       // not represented by zeroed memory
+\end{codelisting}
 
 \subsection{Init methods take only mandatory parameters}
 
