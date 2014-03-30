@@ -103,6 +103,11 @@
 {\endmdframed\vspace{12pt}}
 
 
+% Inline monospaced text
+\definecolor{TundoraColor}{HTML}{444444}
+\newcommand{\inlinecode}[1]{{\textcolor{TundoraColor}{\texttt{#1}}}}
+
+
 % Hyperlinks
 \hypersetup{
     colorlinks = true,
@@ -144,7 +149,7 @@ Most protocols group related methods that aren’t associated with any class in 
 \item NSLock \tabto{3cm} Poor (seems like a name for a class)
 \end{itemize}
 
-Some protocols group a number of unrelated methods (rather than create several separate small protocols). These protocols tend to be associated with a class that is the principal expression of the protocol. In these cases, the convention is to give the protocol the same name as the class. An example of this sort of protocol is the NSObject protocol.
+Some protocols group a number of unrelated methods (rather than create several separate small protocols). These protocols tend to be associated with a class that is the principal expression of the protocol. In these cases, the convention is to give the protocol the same name as the class. An example of this sort of protocol is the \inlinecode{NSObject} protocol.
 
 
 \subsection{Header files follow a structure}
@@ -452,7 +457,7 @@ A delegation method passes the sender as the first parameter. It is a good pract
 
 \subsection{Property's default values are documented conditionally}
 
-The alloc method clears out the memory allocated for an object’s properties, by setting it to zero. If a property value is not altered during the initialization, a note about its default value may be omitted.
+The \inlinecode{alloc} method clears out the memory allocated for an object’s properties, by setting it to zero. If a property value is not altered during the initialization, a note about its default value may be omitted.
 
 \begin{codelisting}
 /*
@@ -488,7 +493,7 @@ If you need a convenience method to create instances, consider creating factory 
 
 \subsection{Accessors are not used in init and dealloc}
 
-Instance subclasses may be in an inconsistent state during init and dealloc method execution, hence code in those methods must avoid invoking accessors.
+Instance subclasses may be in an inconsistent state during \inlinecode{init} and \inlinecode{dealloc} method execution, hence code in those methods must avoid invoking accessors.
 
 \begin{codelisting}
 - (id)init
@@ -550,7 +555,7 @@ typedef NS_ENUM(NSInteger, Enumeration) {
 };
 \end{codelisting}
 
-It also shields from false positives, when comparing against values returned by methods sent to nil pointer. Let's assume EnumerationInvalid does not exist.
+It also shields from false positives, when comparing against values returned by methods sent to nil pointer. Let's assume \inlinecode{EnumerationInvalid} does not exist.
 
 \begin{codelisting}
 @interface MyObject : NSObject
@@ -560,7 +565,7 @@ It also shields from false positives, when comparing against values returned by 
 @end
 \end{codelisting}
 
-If myObject pointer is nil, performActionA method is called, and it may not be expected.
+If \inlinecode{myObject} pointer is \inlinecode{nil}, \inlinecode{performActionA} method is called, and it may not be expected.
 
 \begin{codelisting}
 MyObject * myObject = ...
@@ -595,7 +600,7 @@ Use an operation queue.
 
 \subsection{Exceptions are not used to control flow}
 
-The general pattern is that exceptions are reserved for programming or unexpected runtime errors, such as out-of-bounds collection access, attempts to mutate immutable objects, sending an invalid message, or losing the connection to the window server. A program catching such exception should quit soon afterwards. Exceptions must not be used to control flow in favor of NSError objects.
+The general pattern is that exceptions are reserved for programming or unexpected runtime errors, such as out-of-bounds collection access, attempts to mutate immutable objects, sending an invalid message, or losing the connection to the window server. A program catching such exception should quit soon afterwards. Exceptions must not be used to control flow in favor of \inlinecode{NSError} objects.
 When developing a class or a framework exceptions are thrown to indicate that class or framework are being misused:
 
 \begin{codelisting}
@@ -639,21 +644,21 @@ Unregistering follows the same rule.
 
 \subsection{Methods do not return NSError object}
 
-A failure is indicated by nil or NO returned by a method. Success similarly by YES or not-nil pointer.
+A failure is indicated by \inlinecode{nil} or \inlinecode{NO} returned by a method. Success similarly by \inlinecode{YES} or not-nil pointer.
 
 \begin{codelisting}
 - (id)initWithContentsOfURL:(NSURL *)aURL;
 - (BOOL)writeToURL:(NSURL *)aURL atomically:(BOOL)atomically;
 \end{codelisting}
 
-NSError object is used only for providing additional information about a failure.
+\inlinecode{NSError} object is used only for providing additional information about a failure.
 
 \begin{codelisting}
 - (id)initWithContentsOfURL:(NSURL *)aURL options:(NSDataReadingOptions)mask error:(NSError **)errorPtr;
 - (BOOL)writeToURL:(NSURL *)aURL options:(NSDataWritingOptions)mask error:(NSError **)errorPtr
 \end{codelisting}
 
-Therefore you should always check if the return value is nil or NO before attempting to do anything with an NSError object. Moreover, you ought to check the error domain before examining the error code.
+Therefore you should always check if the return value is \inlinecode{nil} or \inlinecode{NO} before attempting to do anything with an \inlinecode{NSError} object. Moreover, you ought to check the domain before examining the error code.
 
 
 \subsection{Custom errors belong to error domains}
@@ -671,7 +676,7 @@ typedef NS_ENUM(NSInteger, MyErrorCode) {
 };
 \end{codelisting}
 
-Both parameters including localized description are used during error initialization.
+Both parameters including localized description are used during an error initialization.
 
 \begin{codelisting}
 if (error != NULL) {
@@ -779,7 +784,7 @@ The main method checks if an operation is cancelled at the very beginning, and i
 
 \subsection{View is usually initialized in two ways}
 
-Either by calling initWithFrame, or initWithCoder method when it is unarchived form a nib file. Both situations are covered.
+Either by calling \inlinecode{initWithFrame:}, or \inlinecode{initWithCoder:} method when it is unarchived form a nib file. Both situations are covered.
 
 \begin{codelisting}
 @interface ExampleView ()
@@ -826,7 +831,7 @@ Either by calling initWithFrame, or initWithCoder method when it is unarchived f
 }
 \end{codelisting}
 
-Note that we do not implement -encodeWithCoder: method. UIViews and UIViewControllers does not follow normal serialization process, their state is persisted in a model.
+Note that we do not implement \inlinecode{encodeWithCoder:} method. \inlinecode{UIView}s and \inlinecode{UIViewController}s does not follow normal serialization process, their state is persisted in a model.
 
 
 \subsection{The interface of generic view}
@@ -876,7 +881,7 @@ The specific view is tightly coupled with model. It exposes one method that take
 
 \subsection{Properties affecting user interface}
 
-It is a common practice to have properties on view controller that influence its view. Putting view adjusting code in the setter is not enough, as view may be not loaded. After it is loaded, view controller should adjust it according to the property. In result it is convenient to create a separate method for adjusting the view as it will be called from the setter and -viewDidLoad as well.
+It is a common practice to have properties on view controller that influence its view. Putting view adjusting code in the setter is not enough, as view may be not loaded. After it is loaded, view controller should adjust it according to the property. In result it is convenient to create a separate method for adjusting the view as it will be called from the setter and \inlinecode{viewDidLoad} as well.
 
 \begin{codelisting}
 - (void)setClient:(Client *)client
@@ -905,7 +910,7 @@ It is a common practice to have properties on view controller that influence its
 \subsubsection{Container specific items are provided by a property}
 
 
-If a container requires its child to have specific properties, it delivers a category on UIViewController. The category provides an item which encapsulates all of the needed properties.
+If a container requires its child to have specific properties, it delivers a category on \inlinecode{UIViewController}. The category provides an item which encapsulates all of the needed properties.
 
 \begin{codelisting}
 - (UINavigationItem *)navigationItem
@@ -958,7 +963,7 @@ NSManagedObject's properties must not be prefixed with "new". Due to @dynamic co
 
 \subsection{Category provides helper methods to managed object}
 
-NSManagedObject subclasses can be generated by Xcode schema editor automatically.
+\inlinecode{NSManagedObject} subclasses can be generated by Xcode schema editor automatically.
 
 \begin{codelisting}
 @interface Person : NSManagedObject
@@ -981,7 +986,7 @@ Therefore, all helper methods are kept in a category in a separate file, otherwi
 
 \subsection{Custom objects are stored as transformable attributes}
 
-A custom object can be stored by Core Data as a transformable attribute, if it conforms to NSCoding protocol. Xcode schema editor uses id for this attributes, which deprives developer of good type checking.
+A custom object can be stored by Core Data as a transformable attribute, if it conforms to \inlinecode{NSCoding} protocol. Xcode schema editor uses id for this attributes, which deprives developer of good type checking.
 
 \begin{codelisting}
 @interface Person : NSManagedObject
@@ -1022,7 +1027,7 @@ Consequently the original property is never used except by the shadowing propert
 
 \subsection{Objective-C types are stored through NSValue}
 
-NSValue is a simple container for Objective-C data types. It conforms to NSCoding protocol, thus can be stored by Core Data as transformable attribute. 
+\inlinecode{NSValue} is a simple container for Objective-C data types. It conforms to \inlinecode{NSCoding} protocol, thus can be stored by Core Data as transformable attribute. 
 
 \begin{codelisting}
 @interface Figure : NSManagedObject
@@ -1051,7 +1056,7 @@ extern ComplexNumber const ComplexNumberZero;
 @end
 \end{codelisting}
 
-The getter initializes the local variable so it does not return uninitialized value, if the shadowed property is nil.
+The getter initializes the local variable so it does not return uninitialized value, if the shadowed property is \inlinecode{nil}.
 
 \begin{codelisting}
 @implementation Figure (Additions)
@@ -1064,7 +1069,7 @@ The getter initializes the local variable so it does not return uninitialized va
 }
 \end{codelisting}
 
-The setter creates NSValue object with the passed value, and stores it.
+The setter creates \inlinecode{NSValue} object with the passed value, and stores it.
 
 \begin{codelisting}
 - (void)setImaginaryPosition:(ComplexNumber)imaginaryPosition
