@@ -447,6 +447,19 @@ In one case bisection is allowed.
 \end{codelisting}
 
 
+\subsection{Methods can be prefixed with get}
+
+Get prefix is used only in situations when a value is returned indirectly via a memory address.
+
+\begin{codelisting}
+@interface NSValue : NSObject <NSCopying, NSSecureCoding>
+
+- (void)getValue:(void *)value;
+
+@end
+\end{codelisting}
+
+
 \section{General rules}
 
 \subsection{Header files are imported only if necessary}
