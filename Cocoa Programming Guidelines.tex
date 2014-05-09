@@ -272,10 +272,6 @@ In need of greater granularity:
 #pragma mark - Overridden (UIViewControllerRotation)
 \end{codelisting}
 
-\begin{tiplisting}
-Create a code snipped to help you use the same pragma marks through all implementation files.
-\end{tiplisting}
-
 \subsection{Property attributes are kept in an order}
 The attributes are kept in the same order through all property declarations.
 
@@ -299,6 +295,10 @@ Getters for boolean properties, if they are adjectives, are renamed in the follo
 @property (assign, nonatomic, getter = isEnabled) BOOL enabled;
 @property (assign, nonatomic, getter = isTracking) BOOL tracking
 \end{codelisting}
+
+\begin{importantlisting}
+The copy attribute is often used with NSString, NSArray or NSDictionary to preserve encapsulation, since the value passed into the setter might be an instance of mutable subclass.
+\end{importantlisting}
 
 
 \subsection{Protocols and constants are prefixed with a class name}
@@ -609,6 +609,9 @@ else
     [self performActionC];
 \end{codelisting}
 
+\begin{importantlisting}
+NS\_OPTIONS macro is used for declaring enumerations which are to be utilised as bit masks. Such enumerations do not contain the invalid value.
+\end{importantlisting}
 
 \subsection{The highest level of abstraction is used by default}
 
@@ -982,6 +985,23 @@ The following getter implementation traverses view controller hierarchy, and ret
     return (UINavigationController *)controller;
 }
 \end{codelisting}
+
+
+\subsection{The deallocation problem}
+
+The \inlinecode{dealloc} method of \inlinecode{UIViewController} does things that are not safe to do on a secondary thread, thus it must be deallocated on the main thread.
+
+\begin{codelisting}
+[anObject asynchronousOperationWithCompletionHandler:^(NSData *result) {
+    [self processData:result];
+}];
+\end{codelisting}
+
+The foregoing code would cause a problem if implemented in \inlinecode{UIViewController} subclass as the self is retained by the bock. To fix the problem it must be referenced by a weak pointer.
+
+\begin{tiplisting}
+More about the deallocation problem can be found in \href{https://developer.apple.com/library/ios/technotes/tn2109}{Technical Note TN2109}
+\end{tiplisting}
 
 
 \section{Core Data}
