@@ -648,7 +648,7 @@ When developing a class or a framework exceptions are thrown to indicate that cl
 
 \subsection{Lazy loading reduces memory footprint}
 
-Creating an object on demand reduces initialization  time of containing class.
+Creating an object on demand reduces initialisation time of a containing class. The following getter implementation is not thread safe, as two threads might try to initialise \inlinecode{\_cacheDictionary} at the same time.
 
 \begin{codelisting}
 - (NSMutableDictionary *)cacheDictionary
