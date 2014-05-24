@@ -159,7 +159,7 @@ Hardly any software is maintained by its original author for its whole life. Wri
 Prefixes are used only for classes which are to be shared between applications.
 
 
-\subsection{Protocol names indicates behavior}
+\subsection{Protocol names indicates behaviour}
 Most protocols group related methods that aren’t associated with any class in particular. This type of protocol should be named so that the protocol won’t be confused with a class. A common convention is to use a gerund (“...ing”) form:
 
 \begin{itemize}
@@ -488,7 +488,7 @@ A delegation method passes the sender as the first parameter. It is a good pract
 
 \subsection{Property's default values are documented conditionally}
 
-The \inlinecode{alloc} method clears out the memory allocated for an object’s properties, by setting it to zero. If a property value is not altered during the initialization, a note about its default value may be omitted.
+The \inlinecode{alloc} method clears out the memory allocated for an object’s properties, by setting it to zero. If a property value is not altered during the initialisation, a note about its default value may be omitted.
 
 \begin{codelisting}
 /*
@@ -509,7 +509,7 @@ On the contrary, if the default value is changed, a mention about it is included
 
 \subsection{Init methods take only mandatory parameters}
 
-All settings required to a proper initialization are passed as initializer's parameters. They are later accessible through readonly properties.
+All settings required to a proper initialisation are passed as initialiser's parameters. They are later accessible through readonly properties.
 
 \begin{codelisting}
 @property (strong, nonatomic, readonly) DownloaderMode downloaderMode;
@@ -710,7 +710,7 @@ typedef NS_ENUM(NSInteger, MyErrorCode) {
 };
 \end{codelisting}
 
-Both parameters including localized description are used during an error initialization.
+Both parameters including localised description are used during an error initialisation.
 
 \begin{codelisting}
 if (error != NULL) {
@@ -771,7 +771,7 @@ To avoid priority inversion problems with Grand Central Dispatch use default que
 
 \subsection{Multiple readers one writer}
 
-A concurrent isolation queue is used to synchronize access to a property.
+A concurrent isolation queue is used to synchronise access to a property.
 
 \begin{codelisting}
 NSString * queueLabel = [NSString stringWithFormat:@"%@.isolation.%p", [self class], self];
@@ -816,7 +816,7 @@ The main method checks if an operation is cancelled at the very beginning, and i
 
 \section{UIView}
 
-\subsection{View is usually initialized in two ways}
+\subsection{View is usually initialised in two ways}
 
 Either by calling \inlinecode{initWithFrame:}, or \inlinecode{initWithCoder:} method when it is unarchived form a nib file. Both situations are covered.
 
@@ -865,7 +865,7 @@ Either by calling \inlinecode{initWithFrame:}, or \inlinecode{initWithCoder:} me
 }
 \end{codelisting}
 
-Note that we do not implement \inlinecode{encodeWithCoder:} method. \inlinecode{UIView}s and \inlinecode{UIViewController}s does not follow normal serialization process, their state is persisted in a model.
+Note that we do not implement \inlinecode{encodeWithCoder:} method. \inlinecode{UIView}s and \inlinecode{UIViewController}s does not follow normal serialisation process, their state is persisted in a model.
 
 
 \subsection{The interface of generic view}
@@ -1008,7 +1008,7 @@ More about the deallocation problem can be found in \href{https://developer.appl
 
 
 \begin{importantlisting}
-NSManagedObject's properties must not be prefixed with "new". Due to @dynamic compiler directive, the following compiler error is suppressed: "property's synthesized getter follows Cocoa naming convention for returning 'owned' objects".
+NSManagedObject's properties must not be prefixed with "new". Due to @dynamic compiler directive, the following compiler error is suppressed: "property's synthesised getter follows Cocoa naming convention for returning 'owned' objects".
 \end{importantlisting}
 
 
@@ -1107,7 +1107,7 @@ extern ComplexNumber const ComplexNumberZero;
 @end
 \end{codelisting}
 
-The getter initializes the local variable so it does not return uninitialized value, if the shadowed property is \inlinecode{nil}.
+The getter initialises the local variable so it does not return uninitialised value, if the shadowed property is \inlinecode{nil}.
 
 \begin{codelisting}
 @implementation Figure (Additions)
