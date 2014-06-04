@@ -573,46 +573,6 @@ Forcing a subclass to provide an implementation of a method is accomplished by r
 \end{codelisting}
 
 
-\subsection{Enumeration types contain invalid value}
-
-The enumeration type equal to zero is considered as invalid. It protects instance variables from being initialized with a meaningful value when not intended.
-
-\begin{codelisting}
-typedef NS_ENUM(NSInteger, Enumeration) {
-    EnumerationInvalid,
-    EnumerationA,
-    EnumerationB,
-    EnumerationC,
-};
-\end{codelisting}
-
-It also shields from false positives, when comparing against values returned by methods sent to nil pointer. Let's assume \inlinecode{EnumerationInvalid} does not exist.
-
-\begin{codelisting}
-@interface MyObject : NSObject
-
-@property (assign, nonatomic) Enumeration enumeration;
-
-@end
-\end{codelisting}
-
-If \inlinecode{myObject} pointer is \inlinecode{nil}, \inlinecode{performActionA} method is called, and it may not be expected.
-
-\begin{codelisting}
-MyObject * myObject = ...
-
-if (myObject.enumeration == EnumerationA)
-    [self performActionA];
-else if (myObject.enumeration == EnumerationB)
-    [self performActionB];
-else
-    [self performActionC];
-\end{codelisting}
-
-\begin{importantlisting}
-NS\_OPTIONS macro is used for declaring enumerations which are to be utilised as bit masks. Such enumerations do not contain the invalid value.
-\end{importantlisting}
-
 \subsection{The highest level of abstraction is used by default}
 
 Lower levels are used only when more control is required. For example, instead using GCD:
@@ -747,7 +707,9 @@ static void * const navigationItemKey = (void *)&navigationItemKey;
                              navigationItem, 
                              OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
+\end{codelisting}
 
+\begin{codelisting}
 - (UINavigationItem *)navigationItem
 {
     UINavigationItem * navigationItem = objc_getAssociatedObject(self, navigationItemKey);
