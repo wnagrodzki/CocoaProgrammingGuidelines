@@ -731,13 +731,59 @@ To avoid priority inversion problems with Grand Central Dispatch use default que
 \end{importantlisting}
 
 
-\subsection{Multiple readers one writer}
+\subsection{Prefer dispatch queues to locks for mutual exclusion}
 
-A concurrent isolation queue is used to synchronise access to a property.
+Critical sections of the code are isolated by a serial dispatch queue. It allows the calling thread to continue execution in contrast to \inlinecode{NSLock} and \inlinecode{@synchronized} directive.
 
 \begin{codelisting}
-NSString * queueLabel = [NSString stringWithFormat:@"%@.isolation.%p", [self class], self];
-self.isolationQueue = dispatch_queue_create([queueLabel UTF8String], DISPATCH_QUEUE_CONCURRENT);
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        NSString * label = [NSString stringWithFormat:@"%@.isolationQueue.%p", [self class], self];
+        _isolationQueue = dispatch_queue_create([label UTF8String], DISPATCH_QUEUE_SERIAL);
+    }
+    return self;
+}
+\end{codelisting}
+
+The above mentioned queue label helps finding the owning object of the queue while debugging.
+
+\begin{codelisting}
+- (void)startDownloading
+{
+    dispatch_async(self.isolationQueue, ^{
+        // critical code section A
+    }
+}
+
+- (void)cancelDownloading
+{
+    dispatch_async(self.isolationQueue, ^{
+        // critical code section B
+    }
+}
+\end{codelisting}
+
+\begin{importantlisting}
+The queue is not created lazily as it would require the getter to be thread safe.
+\end{importantlisting}
+
+
+\subsection{Multiple readers one writer}
+
+A concurrent dispatch queue is used to synchronise access to a property in an efficient way.
+
+\begin{codelisting}
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        NSString * queueLabel = [NSString stringWithFormat:@"%@.syncQueue.%p", [self class], self];
+        _syncQueue = dispatch_queue_create([queueLabel UTF8String], DISPATCH_QUEUE_CONCURRENT);
+    }
+    return self;
+}
 \end{codelisting}
 
 Dispatch barrier async runs the block after all previously scheduled blocks are completed and before any following blocks are run.
@@ -746,7 +792,7 @@ Dispatch barrier async runs the block after all previously scheduled blocks are 
 - (void)setObject:(id)anObject forKey:(id <NSCopying>)aKey
 {
     aKey = [aKey copyWithZone:NULL];
-    dispatch_barrier_async(self.isolationQueue, ^{
+    dispatch_barrier_async(self.syncQueue, ^{
         [self.mutableDictionary setObject:anObject forKey:aKey];
     });
 }
@@ -754,7 +800,7 @@ Dispatch barrier async runs the block after all previously scheduled blocks are 
 - (id)objectForKey:(id)aKey
 {
     __block id object;
-    dispatch_sync(self.isolationQueue, ^{
+    dispatch_sync(self.syncQueue, ^{
         object = [self.mutableDictionary objectForKey:aKey];
     });
     return object;
