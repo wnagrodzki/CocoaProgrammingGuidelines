@@ -841,7 +841,7 @@ Either by calling \inlinecode{initWithFrame:}, or \inlinecode{initWithCoder:} me
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self initialize];
+        [self initializeExampleView];
     }
     return self;
 }
@@ -850,12 +850,12 @@ Either by calling \inlinecode{initWithFrame:}, or \inlinecode{initWithCoder:} me
 {
     self = [super initWithCoder:aDecoder];
     if (self) {
-        [self initialize];
+        [self initializeExampleView];
     }
     return self;
 }
 
-- (void)initialize
+- (void)initializeExampleView
 {
     _textField = [[UITextField alloc] init];
     _textField.translatesAutoresizingMaskIntoConstraints = NO;
