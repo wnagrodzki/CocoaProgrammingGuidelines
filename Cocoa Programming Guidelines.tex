@@ -662,9 +662,10 @@ Therefore you should always check if the return value is \inlinecode{nil} or \in
 A custom error have both the error domain and error code defined.
 
 \begin{codelisting}
-extern NSString *const MyErrorDomain;
+extern NSString * const MyErrorDomain;
 
-typedef NS_ENUM(NSInteger, MyErrorCode) {
+enum : NSUInteger
+{
     MyErrorCode1,
     MyErrorCode2,
     MyUnknownErrorCode,
@@ -676,17 +677,17 @@ Both parameters including localised description are used during an error initial
 \begin{codelisting}
 if (error != NULL) {
     if(error_situation_1) {
-        error* = [NSError errorWithDomain:MyErrorDomain 
+        *error = [NSError errorWithDomain:MyErrorDomain 
                                      code:MyErrorCode1
                                  userInfo:@{NSLocalizedDescriptionKey: @"Description of error 1"}];
     }
     else if (error_situation_2) {
-        error* = [NSError errorWithDomain:MyErrorDomain 
+        *error = [NSError errorWithDomain:MyErrorDomain 
                                      code:MyErrorCode2
                                  userInfo:@{NSLocalizedDescriptionKey: @"Description of error 2"}];
     }
     else {
-        error* = [NSError errorWithDomain:MyErrorDomain 
+        *error = [NSError errorWithDomain:MyErrorDomain 
                                      code:MyUnknownErrorCode
                                  userInfo:@{NSLocalizedDescriptionKey: @"Unknown error"}];
     }
