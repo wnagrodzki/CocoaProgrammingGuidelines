@@ -714,12 +714,7 @@ static void * const navigationItemKey = (void *)&navigationItemKey;
 \begin{codelisting}
 - (UINavigationItem *)navigationItem
 {
-    UINavigationItem * navigationItem = objc_getAssociatedObject(self, navigationItemKey);
-    if (navigationItem == nil) {
-        navigationItem = [[UINavigationItem alloc] init];
-        self.navigationItem = navigationItem;
-    }
-    return navigationItem;
+    return objc_getAssociatedObject(self, navigationItemKey);
 }
 \end{codelisting}
 
