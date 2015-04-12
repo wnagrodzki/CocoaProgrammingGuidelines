@@ -724,6 +724,37 @@ static void * const navigationItemKey = (void *)&navigationItemKey;
 \end{codelisting}
 
 
+\subsection{Object's equality requites three methods to be provided}
+
+\inlinecode{isEqualToYourClassName:} provides the actual logic and works only with the instances of receiver's class. Passing an object of any other class triggers the assertion. \inlinecode{isEqual:} works with any object. \inlinecode{hash:} usually XORs the hash values of the properties.
+
+\begin{codelisting}
+- (BOOL)isEqualToPerson:(Person *)person
+{
+    if (person == nil) return NO;
+    
+    NSParameterAssert([object isMemberOfClass:[Person class]]);
+    
+    return ((self.name   == nil && person.name   == nil) || [self.name   isEqual:person.name])   &&
+           ((self.weight == nil && person.weight == nil) || [self.weight isEqual:person.weight]) &&
+           ((self.age    == nil && person.age    == nil) || [self.age    isEqual:person.age]);
+}
+
+- (BOOL)isEqual:(id)object
+{
+    if ([self isMemberOfClass:[object class]]) return [self isEqualToPerson:object];
+    return NO;
+}
+
+- (NSUInteger)hash
+{
+    return self.name.hash ^ self.surname.hash ^ self.age.hash;
+}
+\end{codelisting}
+
+If mutable subclass has to be provided, all the occurrences of \inlinecode{isMemberOfClass:} should be replaced with \inlinecode{isKindOfClass:}.
+
+
 \section{Concurrency}
 
 Recommended reading  \href{http://www.objc.io/issue-2/}{Concurrent Programming - objc.io}
