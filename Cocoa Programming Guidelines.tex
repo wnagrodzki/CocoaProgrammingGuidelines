@@ -286,15 +286,15 @@ None of the attributes can be omitted with the exception of readwrite.
 \begin{codelisting}
 @property (assign, nonatomic) CGFloat height;
 @property (strong, nonatomic) UIColor * color;
-@property (copy, nonatomic) NSString * name;
-@property (weak, nonatomic) id <UITableViewDelegate> delegate;
+@property (copy,   nonatomic) NSString * name;
+@property (weak,   nonatomic) id <UITableViewDelegate> delegate;
 \end{codelisting}
 
 Getters for boolean properties, if they are adjectives, are renamed in the following manner:
 
 \begin{codelisting}
-@property (assign, nonatomic, getter = isVisible) BOOL visible;
-@property (assign, nonatomic, getter = isEnabled) BOOL enabled;
+@property (assign, nonatomic, getter = isVisible)  BOOL visible;
+@property (assign, nonatomic, getter = isEnabled)  BOOL enabled;
 @property (assign, nonatomic, getter = isTracking) BOOL tracking
 \end{codelisting}
 
