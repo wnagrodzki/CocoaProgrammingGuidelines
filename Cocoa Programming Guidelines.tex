@@ -206,7 +206,7 @@ Please pay attention to the linespacing, it is also a rule.
 
 
 typedef NS_ENUM(NSInteger, Enumeration) {
-    EnumerationA,
+    EnumerationA = 1,
     EnumerationB
 };
 
@@ -475,6 +475,41 @@ Importing a header file is allowed:
 \end{itemize}
 
 In any other case a forward declaration should be applied.
+
+
+\subsection{Enums do not start with zero value}
+
+The rule guards against retrieving a proper enum value from nil object.
+
+\begin{codelisting}
+typedef NS_ENUM(NSUInteger, PaymentMethod) {
+    PaymentMethodCash = 1,
+    PaymentMethodCreditCard,
+    PaymentMethodCheque,
+};
+\end{codelisting}
+
+
+\subsection{Switch statements are exhaustive}
+
+Assertion is triggered if invalid enum value is encountered.
+
+\begin{codelisting}
+switch (order.paymentMethod)
+{
+    case PaymentMethodCash:
+        break;
+        
+    case PaymentMethodCreditCard:
+        break;
+        
+    case PaymentMethodCheque:
+        break;
+        
+    default:
+        NSAssert(NO, @"Invalid enum value");
+}
+\end{codelisting}
 
 
 \subsection{Delegate methods always pass the sender}
